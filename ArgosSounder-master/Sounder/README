@@ -1,0 +1,56 @@
+
+Sounder/
+
+This folder includes a library of code for running channel sounding
+experiments with an ArgosV3 base station. To run, follow steps below:
+
+Edit base station input config file (e.g. conf/tddconfig.json): 
+
+- This file contains all the configurations you need for your channel 
+  sounding experiment on the base station side. 
+  * "hubs" specifies the file containing the serial number of ArgosV3
+     hubs (mutiple hubs in case of a multi-cell experiment).
+  * "irises" specifies the name of the file serial number of all 
+    Irises you wish to use in the experiment in the base station.
+  * "cells" determines the number of cells (ArgosV3) base stations
+    in the experiment.
+  * "frequency" operating center frequency.
+  * "rxgain" receive gain to be used on each radio.
+  * "txgain" transmit gain to be used on each radio (PAD).
+  * "rate" operating bandwidth for all radios.
+  * "symbol_size" the number of samples in each symbol in TDD mode.
+  * "prefix" prefix length i.t.o number of samples in each symbol.
+  * "postfix" postfix length i.t.o number of samples in each symbol.
+  * "frames" format of each frame (mode for each symbol). "B" identifies
+    a symbol as beacon. "G" is guard band, "P" is pilot, "U" is uplink
+    and "D" is downlink. 
+ 
+Edit user terminal(s) input config file (e.g. conf/userconfig.json):
+
+- Similar to above with the addition of serials label
+  * "serials" specifies the serial numbers of all 
+    Irises you wish to use as user terminals in the experiment.
+  * "coeffs" coefficients of the correlator to be loaded in the users' FPGAs
+  * "pilot" pilot signal to be sent by the users' to the base station
+  * "txdata" tx signal to be sent by the users' to the base station (if uplink is enabled, i.e. 'T' symbols)
+ 
+NOTE 1: Multi-cell case is currently not implemented. 
+NOTE 2: The format of "frames" entry in tddconfig.json is slightly 
+        different from what is used in user config file and python code (setupUE.py). Here 
+        downlink, uplink and beacon signals are distinguished.
+NOTE 3: Beacon signal is loaded from beacon.txt. The length of data must 
+        match symbol_size.
+NOTE 4: Currently, the number of users is extracted from the number of 
+        pilots in frames entry. This could change in the future, as
+        every 16 consecutive frames can be programmed separately and
+        each frame could have a different number of pilots with users
+        are scheduled to send pilots at different frames.
+NOTE 5: Currently users are setup separately from the base station
+      To ensure correct behavior, first setup the users (below) before running sounder
+      code.
+
+cmake ./
+make -j
+./user conf/userconfig.json
+./sounder conf/tddconfig/json
+

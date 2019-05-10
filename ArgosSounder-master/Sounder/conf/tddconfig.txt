@@ -1,0 +1,16 @@
+hubs=hub_serials.txt/
+irises=iris_serials.txt/
+cells=1/
+channels=1/
+frequency=3.6e9/
+txgainA=40/
+rxgainA=20/
+txgainB=40/
+rxgainB=20/
+rate=5e6/
+symbol_size=662/
+prefix=82/
+postfix=68/
+beacon_mode=single/
+beacon_antenna=0/
+frames=BGPGGGGGGGGGGGGGGGGG/

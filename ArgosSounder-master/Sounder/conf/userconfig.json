@@ -1,0 +1,24 @@
+{
+ "coeffs" : "conf/coe.txt",
+ "txdata" : "conf/txdata.txt",
+ "pilot" : "conf/ipilot.txt",
+ "channels" : 1,
+ "frequency" : 3.6e9,
+ "rxgain" : 20,
+ "fegain" : 0,
+ "txgain" : 40,
+ "rate" : 5e6,
+ "symbol_size" : 550,
+ "prefix" : 82,
+ "postfix" : 68,
+ "tx_delta" : 20.0,
+ "cpu_core" : 0,
+ "frames" : [
+     "GGPGGGGGGGGGGGGGGGGG",
+     "GGPGGGGGGGGGGGGGGGGG"
+],
+ "serials" : [
+     "RF3E000029",
+     "RF3E000040"
+]
+}

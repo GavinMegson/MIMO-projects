@@ -1,0 +1,71 @@
+
+Python_Toolbox/
+
+- IrisTDD.py: this script is useful for testing the TDD operation.
+  It programs two Irises in TDD mode with the following framing 
+  schedule:
+   Iris 1: PGRG
+   Iris 2: RGPG
+  Note that in above, P means a pilot or a pre-loaded signal.
+  G means Guard band (no Tx or Rx action), R means Rx, and T
+  means Tx, though not used in this script.
+  The above determines the operation for each frame and each
+  letter determines one symbol. Although every 16 consecutive
+  frames can be scheduled separately.
+  The pilot signal in this case is sinusoid which is written
+  into FPGA buffer (TX_RAM_A & _B for channels A & B) before
+  the start trigger.
+  The script also programs the Irises in one-shot mode, i.e.
+  they run for just one frame (trigger_mode : true). That means
+  each frame starts with a separate trigger. After the end of
+  the frame, it plots the two Rx symbols which are supposedly
+  what they received from each other.
+
+
+- IrisSounder: this script is useful for channel sounding tests.
+  It program two Irises in TDD mode one as a base station node,
+  and the other as a UE node. The configuration is similar to
+  IrisTDD.py except that for the UE node, an FPGA-based correlator
+  is configured as well (lines 216-224). Additionally, the BS node
+  is configured for non-recurring triggers (trigger_mode : false),
+  i.e., a trigger is used only for starting frame counting. On
+  the other hand the UE will rely on the correlator to trigger
+  itself and count frames. Given the delay between base station 
+  and UE (group delay at front-end, and RF path delay) there is a
+  mechanism for adjusting the frame time using setHardwareTime (
+  line 235) which sets the start symbol and start count within the
+  symbol at the time of a correlator trigger. This frame time also
+  accounts for the time advance between the UE and base station
+  node.
+  For the correlator to work, the base station node needs to send
+  a beacon signal. The first symbol of each frame for that node 
+  is set as "P" since beacon is a pre-loaded signal. Also the conj
+  of the same beacon must be written into UE's correlator as its 
+  coefficients (line 217-218).
+  A pilot signal (currently a programmable repition of a WiFi LTS)
+  is written into FPGA buffers and are transmitted in symbol 3 of
+  each frame. 
+  Another new parameter here is the Tx symbols that are configured
+  with txSymNum option. This number of symbols are configured as 
+  transmit right after the pilot symbol. Data (a sinusoid signal)
+  is streamed during those symbols from the host to the Iris from
+  a separate thread.
+  An option for quick test in use_trig, which allows for two chained
+  Irises to do the same operation, except that correlator is not
+  needed and both nodes are configured for automatic frame counting
+  using a non-recurring trigger.
+  TDD operation starts with a trigger (line 263) and runs perpetually
+  until it stopped by the user (Ctrl-c). Received pilots and data are
+  stored in binary files and they can be inspected using plt_simp.py
+
+- setupUE.py: this script is similar to IrisSounder.py except it
+  configures the UE part. It is mainly for the purpose of running
+  a UE to be used with Sounder code in "Sounder/" (see below).
+  The only difference w.r.t IrisSounder.py is an additional option
+  pilotSymbol. This allows multiple instances of UE to be run with
+  each having their pilot at a different symbol.
+
+- plot_hdf.py: simple script to analyze recorded hdf5 file from 
+  channel sounding (see Sounder/). Usage format is:
+  ./plot_hdf.py hdf5_file_name symbol_size frame_number_to_plot 0(pilots)/1(uplink)
+  example: ./plot_hdf5.py ../Sounder/logs/test-hdf5.py 550 100 0
