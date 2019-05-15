@@ -181,6 +181,7 @@ class MIMO_SDR:
 						time.sleep(0.1) #seems that the tx data may not have gone through both IP stacks and DMA yet, so we need to wait a bit to avoid a race.
 						sdr.writeSetting("TRIGGER_GEN", "")		
 
+		# GM (not lts mode)
 		else:
 
 			#scaler = (np.arange(s_length/2)).astype(np.complex64)/(s_length/2)
@@ -240,7 +241,7 @@ class MIMO_SDR:
 			
 
 	def getSamples(self):
-		#print("getSamples()")
+		print("getSamples()")
 		#return self.sampsToSend
 
 		#clear out socket buffer from old requests
@@ -259,7 +260,8 @@ class MIMO_SDR:
 				numSent = 0
 				while numSent < num_samps:
 					sr = sdr.writeStream(txStream, [self.sampsToSend[r*2][numSent:], self.sampsToSend[r*2+1][numSent:]], self.num_samps-numSent, flags)
-					#print(sr) 
+					# GM decomment
+					print(sr) 
 					#assertGreater(sr.ret, 0)
 					numSent += sr.ret
 					if sr.ret == -1:
@@ -276,18 +278,12 @@ class MIMO_SDR:
 		self.trig_sdr.writeSetting("TRIGGER_GEN", "")
 		time.sleep(0.05)
 
-		# added
-		badread = 0
 		for r,sdr in enumerate(self.rx_sdrs):
 			
 			rxStream = self.rxStreams[r]
 			sr = sdr.readStream(rxStream, [self.sampsRecv[r*2], self.sampsRecv[r*2+1]], len(self.sampsRecv[0]), timeoutUs=int(1e6))
 			if sr.ret != len(self.sampsRecv[0]):
 				print("Bad read!!!")
-				# added
-				badread += 1
-				if badread > 5:
-					break
 
 			#remove residual DC offset
 			self.sampsRecv[r*2][:] -= np.mean(self.sampsRecv[r*2][:])

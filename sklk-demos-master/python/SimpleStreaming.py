@@ -39,7 +39,10 @@ if __name__ == '__main__':
 	sdr.setSampleRate(SOAPY_SDR_RX, 0, rate)
 	sdr.setFrequency(SOAPY_SDR_RX, 0, "RF", freq)
 	sdr.setGain(SOAPY_SDR_RX, 0, rxGain)
-	sdr.setAntenna(SOAPY_SDR_RX, 0, "RX")
+	# GM
+	# in the device info (SoapySDRUtil --probe), there is no "rx" receiver, just TRX, LB1, and LB2
+#	sdr.setAntenna(SOAPY_SDR_RX, 0, "RX")
+	sdr.setAntenna(SOAPY_SDR_RX, 0, "LB2")
 	
 	# Init Tx
 	sdr.setSampleRate(SOAPY_SDR_TX, 0, rate)

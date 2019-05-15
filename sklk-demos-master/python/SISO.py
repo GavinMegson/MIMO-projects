@@ -150,18 +150,25 @@ class SISO_SDR:
 			print("nsamps, sr.ret, [sampsRecv]")
 			print(nsamps)
 			print(sr.ret)
-			# GM print as list, so it all prints
-			#print(sampsRecv.tolist()[:150])
-			# GM attempting to invert signal back into integers
-				# for reference (from below):
-				# sig = np.exp(s_time_vals*1j*2*np.pi*s_freq).astype(np.complex64)*.5
-#			decoded = np.log(sampsRecv*2) /1j /2 /np.pi /500e3 # s_freq = 500e3
-			decoded = np.log((sampsRecv*2).astype(float)) /1j /2 /np.pi /500e3 # s_freq = 500e3
+		# GM print as list, so it all prints
+		#print(sampsRecv.tolist()[:150])
+		# GM attempting to invert signal back into integers
+			# for reference (from below):
+			# sig = np.exp(s_time_vals*1j*2*np.pi*s_freq).astype(np.complex64)*.5
 
-			ints = np.arange(150)
-			# GM print expected, raw data from buffer, inverted function
-			for i in range(150):
-				print("expected: ",ints[i] - 100,"\nraw: ",sampsRecv[i],"\nval: ",decoded[i])
+		decoded = np.log(sampsRecv[:150]*2) /1j /2 /np.pi /500e3 # s_freq = 500e3
+#		decoded = np.log((sampsRecv*2).astype(float)) /1j /2 /np.pi /500e3 # s_freq = 500e3
+
+		ints = np.arange(150)
+		ints = ints - 100 #samp buff
+
+		#GM estimating CSI
+#		csi = decoded / ints
+		csi = sampsRecv[:150] / ints
+
+		# GM print expected, raw data from buffer, inverted function
+		for i in range(150):
+			print("expected: ",ints[i],"\nraw: ",sampsRecv[i],"\nval: ",decoded[i],"\nCSI: ",csi[i])
 
 		return sampsRecv
 	
