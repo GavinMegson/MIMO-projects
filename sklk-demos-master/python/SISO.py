@@ -133,6 +133,7 @@ class SISO_SDR:
 		ts = hw_time + delay + rx_delay_ns if ts is None else ts + rx_delay_ns
 		sampsRecv = np.empty(nsamps, dtype=np.complex64)
 		rxFlags = SOAPY_SDR_HAS_TIME | SOAPY_SDR_END_BURST
+		# GM note: if nsamps is greater than some threshold, an error will print to terminal
 		self.rxsdr.activateStream(self.rxStream, rxFlags, ts, nsamps)
 		
 		# GM uncommented these added first line
@@ -163,8 +164,8 @@ class SISO_SDR:
 		ints = ints - 100 #samp buff
 
 		#GM estimating CSI
-#		csi = decoded / ints
-		csi = sampsRecv[:150] / ints
+		csi = decoded / ints
+#		csi = sampsRecv[:150] / ints
 
 		# GM print expected, raw data from buffer, inverted function
 		for i in range(150):
@@ -267,7 +268,8 @@ if __name__ == '__main__':
 	)
 	
 	#Generate signal to send
-	nsamps = 78000*2
+#	nsamps = 78000*2
+	nsamps = 50
 	nsamps_pad = 100
 	s_freq = 500e3
 	Ts = 1/siso_sdr.rate
