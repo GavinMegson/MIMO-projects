@@ -271,20 +271,47 @@ if __name__ == '__main__':
 #	nsamps = 78000*2
 	nsamps = 50
 	nsamps_pad = 100
-	s_freq = 500e3
-	Ts = 1/siso_sdr.rate
+#	s_freq = 500e3
+	s_freq = 1
+#	Ts = 1/siso_sdr.rate
+	Ts = 1
 	# GM: This code should arrange the numbers 0 through nsamps-1 as ints in order, 
 		# convert them into np.complex64,
 		# and use that to make a raw signal to tx (with padding)
-	s_time_vals = np.array(np.arange(0,nsamps)).transpose()*Ts
-	sig = np.exp(s_time_vals*1j*2*np.pi*s_freq).astype(np.complex64)*.5
+	s_time_vals = np.array(np.arange(49,nsamps)).transpose()*Ts *1j
+	print("s_time_vals")
+	print(s_time_vals)
+
+#	sig = np.exp(s_time_vals*1j*2*np.pi*s_freq).astype(np.complex64)*.5
+#	sig = np.exp(s_time_vals*1j*2*np.pi*s_freq)*.5
+	sig = np.exp(s_time_vals)
+#	sig = (s_time_vals*1j*2*np.pi*s_freq).astype(np.complex64)*.5
+#	sig = (s_time_vals*1*2*np.pi*s_freq).astype(np.complex64)*.5
+
+	print("sig")
+	print(sig)
+
 	sig_pad = np.concatenate((np.zeros(nsamps_pad), sig, np.zeros(nsamps_pad)))
+
+	# GM added
+#	decoded = np.log(sig*2) /1j /2 /np.pi /(500e3) # s_freq = 500e3
+#	decoded = np.log(sig*2) /(1j *2 *np.pi *s_freq) # s_freq = 500e3
+	decoded = np.log(sig)
+#	decoded = sig*2 /(1j *2 *np.pi *(500e3)) # s_freq = 500e3
+#	decoded = sig*2 /(1 *2 *np.pi *(500e3)) # s_freq = 500e3
+
+	print("decoded")
+	print(decoded)
+
+	print("difference")
+	print(np.absolute(s_time_vals - decoded))
+#	print(s_time_vals - decoded)
 	
 	# GM uncommented these
-	rx = siso_sdr.trx(sig_pad) if args.txserial is not None else siso_sdr.rx(nsamps)
+#	rx = siso_sdr.trx(sig_pad) if args.txserial is not None else siso_sdr.rx(nsamps)
 	
 	# GM
-	print(rx)
+#	print(rx)
 
 	#import matplotlib.pyplot as plt
 	#plt.plot(rx)
