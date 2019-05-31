@@ -141,8 +141,8 @@ def siso_tdd_burst(serial1, serial2, rate, freq, txgain, rxgain, numSamps, prefi
 
 	# read RX streams
 	r1 = msdr.readStream(rxStreamM, [waveRxA1, waveRxB1], symSamp)
-	print("reading stream 1 ({})".format(r1))
 	r2 = bsdr.readStream(rxStreamB, [waveRxA2, waveRxB2], symSamp)
+	print("reading stream 1 ({})".format(r1))
 	print("reading stream 2 ({})".format(r2))
 
 	print("printing number of frames")
@@ -215,6 +215,8 @@ def main():
 	parser.add_option("--prefix-pad", type="int", dest="prefix_length", help="prefix padding length for beacon and pilot", default=82)
 	parser.add_option("--postfix-pad", type="int", dest="postfix_length", help="postfix padding length for beacon and pilot", default=68)
 	(options, args) = parser.parse_args()
+
+	# call function
 	siso_tdd_burst(
         	serial1=options.serial1,
        		serial2=options.serial2,

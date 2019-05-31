@@ -42,7 +42,7 @@ if __name__ == '__main__':
 	# GM
 	# in the device info (SoapySDRUtil --probe), there is no "rx" receiver, just TRX, LB1, and LB2
 #	sdr.setAntenna(SOAPY_SDR_RX, 0, "RX")
-	sdr.setAntenna(SOAPY_SDR_RX, 0, "LB2")
+	sdr.setAntenna(SOAPY_SDR_RX, 0, "TRX")
 	
 	# Init Tx
 	sdr.setSampleRate(SOAPY_SDR_TX, 0, rate)
