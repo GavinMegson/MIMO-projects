@@ -27,10 +27,12 @@ import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
 from generate_sequence import *
-from uint32tocfloat import *
-from read_from_file import *
+#from uint32tocfloat import *
+#from read_from_file import *
 from find_lts import *
 
+from file_rdwr import *
+from type_conv import *
 
 def plot_data(pilot, rxdata, channelnum, framelen=512, framenum=100, pilotsymnum=1, uplinksymnum=0):
     # dc removal

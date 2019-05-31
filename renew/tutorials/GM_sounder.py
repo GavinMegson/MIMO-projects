@@ -316,7 +316,7 @@ def siso_sounder(serial1, serial2, rate, freq, txgain, rxgain, numSamps, numSyms
         # bsdr.writeSetting("FPGA_DIQ_MODE", "PATTERN")
     else:
 	#GM
-        #msdr.writeRegister("ARGCOR", CORR_RST, 0x1)  # reset corr
+        #msdr.writeRegister("RFCORE", CORR_RST, 0x1)  # reset corr
         msdr.writeRegister("RFCORE", CORR_RST, 0x1)  # reset corr
 
     # Packet size
@@ -382,13 +382,13 @@ def siso_sounder(serial1, serial2, rate, freq, txgain, rxgain, numSamps, numSyms
     if not use_trig:
         msdr.writeRegister("IRIS30", CORR_CONF, int("00004001", 16))  # enable the correlator, with zeros as inputs
         for i in range(128):
-            msdr.writeRegister("ARGCOE", i*4, 0)
+            msdr.writeRegister("RFCORE", i*4, 0)
         time.sleep(0.1)
-        msdr.writeRegister("ARGCOR", CORR_THRESHOLD, int(threshold))
-        msdr.writeRegister("ARGCOR", CORR_RST, 0x1)  # reset corr
-        msdr.writeRegister("ARGCOR", CORR_RST, 0x0)  # unrst corr
+        msdr.writeRegister("RFCORE", CORR_THRESHOLD, int(threshold))
+        msdr.writeRegister("RFCORE", CORR_RST, 0x1)  # reset corr
+        msdr.writeRegister("RFCORE", CORR_RST, 0x0)  # unrst corr
         for i in range(128):
-            msdr.writeRegister("ARGCOE", i*4, int(coe[i]))
+            msdr.writeRegister("RFCORE", i*4, int(coe[i]))
         if auto_tx_gain:
             max_gain = int(txgain)
             min_gain = max(0, max_gain-15)
@@ -442,7 +442,7 @@ def signal_handler(rate, numSyms, signal, frame):
     print("printing number of frames")
     print("NB 0x%X" % SoapySDR.timeNsToTicks(bsdr.getHardwareTime(""), rate))
     print("UE 0x%X" % SoapySDR.timeNsToTicks(msdr.getHardwareTime(""), rate))
-    # print("UE SCNT: 0x%X" % msdr.readRegister("ARGCOR", CORR_SCNT))
+    # print("UE SCNT: 0x%X" % msdr.readRegister("RFCORE", CORR_SCNT))
     # ADC_rst, stops the tdd time counters
     for sdr in [bsdr, msdr]:
         sdr.writeRegister("IRIS30", RF_RST_REG, (1<<29)| 0x1)
